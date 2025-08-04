@@ -1,0 +1,2 @@
+# Este archivo mantiene la carpeta logs en el repositorio
+# Los archivos de log (*.log) están excluidos por .gitignore 

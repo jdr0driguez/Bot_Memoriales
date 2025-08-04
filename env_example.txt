@@ -1,0 +1,22 @@
+# Variables de entorno para Tech_Balancer
+# Copia este archivo como .env y configura las variables
+
+# Configuración de la API de captcha
+CAPTCHA_API_KEY=tu_api_key_aqui
+
+# Ruta a Tesseract OCR
+TESSERACT_PATH=C:\Program Files\Tesseract-OCR\tesseract.exe
+
+# URL del sitio web objetivo
+URL=https://ejemplo.com
+
+# Configuración opcional
+CAPTCHA_SOLVER=tesseract
+WAIT_TIMEOUT=10
+
+# Configuración de base de datos (si es necesaria)
+DB_HOST=localhost
+DB_PORT=5432
+DB_NAME=tech_balancer_db
+DB_USER=usuario
+DB_PASSWORD=contraseña 

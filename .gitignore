@@ -1,0 +1,34 @@
+# Variables de entorno
+.env
+
+# Entornos virtuales
+vScrap_clean/
+venv/
+env/
+
+# Archivos de caché de Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Logs
+logs/*.log
+!logs/.gitkeep
+
+# Archivos temporales
+*.tmp
+*.temp
+*.bak
+
+# Archivos de configuración local
+launch.json
+.vscode/
+
+# Archivos de sistema
+.DS_Store
+Thumbs.db
+
+# Archivos de respaldo
+*_copy.py
+*_backup.py
