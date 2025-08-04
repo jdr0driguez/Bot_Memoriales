@@ -35,10 +35,10 @@ def parse_elemento(data: dict[str, Any]) -> Elemento:
 def parse_api_response(json_data: dict[str, Any]) -> ApiResponse:
     logger.debug(" Iniciando parsing de respuesta de API")
     
-    element_data = json_data.get("Element")
+    element_data = json_data.get("Elements")
     logger.debug(f" Datos de elementos encontrados: {type(element_data)}")
 
-    # Si Element es null o no est, devolvemos lista vaca
+    # Si Elements es null o no está, devolvemos lista vacía
     if element_data is None:
         logger.warning(" No se encontraron elementos en la respuesta de la API")
         elementos: List[Elemento] = []
@@ -46,7 +46,7 @@ def parse_api_response(json_data: dict[str, Any]) -> ApiResponse:
         logger.info(f" Parseando {len(element_data)} elementos de la lista")
         elementos = [parse_elemento(e) for e in element_data]
     else:
-        logger.info(" Parseando elemento nico")
+        logger.info(" Parseando elemento único")
         elementos = [parse_elemento(element_data)]
 
     success = json_data.get("Success", False)
