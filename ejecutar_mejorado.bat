@@ -46,14 +46,48 @@ IF %ERRORLEVEL% NEQ 0 (
     exit /b 1
 )
 
+:: Verificar que el entorno esté activado correctamente
+echo [%date% %time%] Verificando entorno virtual activado...
+echo [%date% %time%] Verificando entorno virtual activado... >> %ARCHIVO_LOG%
+python -c "import sys; print('Entorno virtual:', sys.prefix)" 2>nul
+IF %ERRORLEVEL% NEQ 0 (
+    echo [%date% %time%] ERROR: El entorno virtual no está activado correctamente
+    echo [%date% %time%] ERROR: El entorno virtual no está activado correctamente >> %ARCHIVO_LOG%
+    pause
+    exit /b 1
+)
+
 :: Instalar/actualizar dependencias
 echo [%date% %time%] Verificando dependencias...
 echo [%date% %time%] Verificando dependencias... >> %ARCHIVO_LOG%
+
+:: Verificar dependencias críticas
+python -c "import requests" >nul 2>&1
+IF %ERRORLEVEL% NEQ 0 (
+    echo [%date% %time%] ERROR: requests no está instalado
+    echo [%date% %time%] ERROR: requests no está instalado >> %ARCHIVO_LOG%
+    echo [%date% %time%] Ejecuta instalar_dependencias.bat para instalar las dependencias
+    echo [%date% %time%] Ejecuta instalar_dependencias.bat para instalar las dependencias >> %ARCHIVO_LOG%
+    pause
+    exit /b 1
+)
+
+python -c "import selenium" >nul 2>&1
+IF %ERRORLEVEL% NEQ 0 (
+    echo [%date% %time%] ERROR: selenium no está instalado
+    echo [%date% %time%] ERROR: selenium no está instalado >> %ARCHIVO_LOG%
+    echo [%date% %time%] Ejecuta instalar_dependencias.bat para instalar las dependencias
+    echo [%date% %time%] Ejecuta instalar_dependencias.bat para instalar las dependencias >> %ARCHIVO_LOG%
+    pause
+    exit /b 1
+)
+
+:: Actualizar dependencias si es necesario
 pip install --upgrade pip --quiet >nul 2>&1
 pip install -r requirements.txt --quiet >nul 2>&1
 IF %ERRORLEVEL% NEQ 0 (
-    echo [%date% %time%] WARNING: Algunas dependencias no se pudieron instalar
-    echo [%date% %time%] WARNING: Algunas dependencias no se pudieron instalar >> %ARCHIVO_LOG%
+    echo [%date% %time%] WARNING: Algunas dependencias no se pudieron actualizar
+    echo [%date% %time%] WARNING: Algunas dependencias no se pudieron actualizar >> %ARCHIVO_LOG%
 )
 
 echo [%date% %time%] Configuración completada. Iniciando bucle de ejecución...
