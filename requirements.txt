@@ -7,6 +7,7 @@ pyodbc==5.0.1
 # Manejo de archivos y transferencias
 paramiko==3.4.0
 cryptography==41.0.7
+pycryptodome==3.19.1
 
 # Procesamiento de datos
 pandas==2.1.4
@@ -14,7 +15,6 @@ numpy==1.24.4
 
 # Solicitudes HTTP y APIs
 requests==2.31.0
-urllib3==2.0.7
 
 # Manejo de fechas y horarios (NUEVAS DEPENDENCIAS)
 pytz==2023.3
