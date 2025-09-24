@@ -94,8 +94,11 @@ try {
     # Crear accion de la tarea
     $action = New-ScheduledTaskAction -Execute $ExecuteScript -WorkingDirectory $ProjectRoot
 
-    # Crear trigger (cada X minutos, indefinidamente)
-    $trigger = New-ScheduledTaskTrigger -Once -At (Get-Date) -RepetitionInterval (New-TimeSpan -Minutes $Interval) -RepetitionDuration ([TimeSpan]::MaxValue)
+    # Crear trigger diario que se repite cada X minutos
+    $startTime = (Get-Date).Date.AddHours(0).AddMinutes(0)  # Empezar a medianoche
+    $trigger = New-ScheduledTaskTrigger -Daily -At $startTime
+    $trigger.Repetition.Interval = "PT$($Interval)M"  # Repetir cada X minutos
+    $trigger.Repetition.Duration = "P1D"  # Durante 1 día completo
 
     # Configuracion de la tarea
     $settings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -StartWhenAvailable -RunOnlyIfNetworkAvailable -DontStopOnIdleEnd -RestartCount 3 -RestartInterval (New-TimeSpan -Minutes 1)
@@ -140,8 +143,12 @@ try {
     Write-Host ""
 
     # Mostrar estado actual
-    $createdTask = Get-ScheduledTask -TaskName $TaskName
-    Write-Host "Estado actual: $($createdTask.State)" -ForegroundColor Green
+    try {
+        $createdTask = Get-ScheduledTask -TaskName $TaskName -ErrorAction Stop
+        Write-Host "Estado actual: $($createdTask.State)" -ForegroundColor Green
+    } catch {
+        Write-Host "Advertencia: No se pudo verificar el estado de la tarea" -ForegroundColor Yellow
+    }
 
     # Opcion de ejecutar inmediatamente
     Write-Host ""
