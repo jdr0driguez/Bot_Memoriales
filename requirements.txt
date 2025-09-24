@@ -1,0 +1,33 @@
+# Dependencias principales del Bot de Memoriales
+# Actualizado: 24/09/2025
+
+# Base de datos
+pyodbc==5.0.1
+
+# Manejo de archivos y transferencias
+paramiko==3.4.0
+cryptography==41.0.7
+
+# Procesamiento de datos
+pandas==2.1.4
+numpy==1.24.4
+
+# Solicitudes HTTP y APIs
+requests==2.31.0
+urllib3==2.0.7
+
+# Manejo de fechas y horarios (NUEVAS DEPENDENCIAS)
+pytz==2023.3
+holidays==0.34
+
+# Utilidades adicionales
+python-dotenv==1.0.0
+openpyxl==3.1.2
+
+# Logging y monitoreo
+colorama==0.4.6
+
+# Desarrollo y testing (opcional)
+pytest==7.4.3
+black==23.11.0
+flake8==6.1.0
