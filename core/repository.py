@@ -194,9 +194,106 @@ def fetch_plantilla_correo(
 
         # Puedes acceder por ndice o por nombre si lo prefieres:
         plantillaCorreo = row[0]                   
-        logger.debug(f" Correo de plantilla encontrado para ID de plantilla {idPlantilla} y expediente {idExpediente}: {plantillaCorreo}")
+        logger.debug(f" Correo de plantilla encontrado para ID de plantilla {idPlantilla} y expediente {idExpediente}")
         return plantillaCorreo
         
     except Exception as e:
         logger.error(f" Error consultando correo de plantilla para ID de plantilla {idPlantilla} y expediente {idExpediente}: {e}")
+        return None
+
+def fetch_idDemandado(
+        conn: Connection, 
+        idPlantilla: str, 
+        idExpediente: str) -> Optional[int]:
+    """
+    Recupera los valores de columnaX, columnaY y columnaZ para un expediente dado.
+    Devuelve (valorX, valorY, valorZ) o None si no existe el expediente.
+    Ajusta los tipos de retorno segn el esquema real.
+    """
+    logger.debug(f" Consultando idDemandado para ID de plantilla: {idPlantilla} y expediente: {idExpediente}")
+    
+    sql = """
+    SELECT TOP (1) [demandadoId]
+    FROM [ROCKET_PRIME].[dbo].[APLI_EXP_DOCUMENTOS]
+    WHERE expedienteId = ? and plantillaId = ? and tipoExpDocumentoId = 1;
+"""
+    try:
+        cursor = conn.cursor()
+        cursor.execute(sql, (idExpediente, idPlantilla))
+        row = cursor.fetchone()
+        
+        if not row:
+            logger.warning(f" No se encontro idDemandado para ID de plantilla: {idPlantilla} y expediente: {idExpediente}")
+            return None
+
+        # Puedes acceder por ndice o por nombre si lo prefieres:
+        idDemandado = row[0]                   
+        logger.debug(f" idDemandado de plantilla encontrado para ID de plantilla {idPlantilla} y expediente {idExpediente}: {idDemandado}")
+        return idDemandado
+        
+    except Exception as e:
+        logger.error(f" Error consultando idDemandado de plantilla para ID de plantilla {idPlantilla} y expediente {idExpediente}: {e}")
+        return None
+
+def fetch_nomDocumento(
+        conn: Connection, 
+        idPlantilla: str, 
+        idExpediente: str) -> Optional[int]:
+    """
+    Recupera el valor del nombre del documento a descargar
+    """
+    logger.debug(f" Consultando nomDocumentoAdjunto para ID de plantilla: {idPlantilla} y expediente: {idExpediente}")
+    
+    sql = """
+    select top (1) nombreDocAdjunto from APLI_EXP_DOCUMENTOS
+    where expedienteId = ? AND plantillaId = ?;
+"""
+    try:
+        cursor = conn.cursor()
+        cursor.execute(sql, (idExpediente, idPlantilla))
+        row = cursor.fetchone()
+        
+        if not row:
+            logger.warning(f" No se encontro nomDocumentoAdjunto para ID de plantilla: {idPlantilla} y expediente: {idExpediente}")
+            return None
+
+        # Puedes acceder por ndice o por nombre si lo prefieres:
+        nomDocAdjunto = row[0]                   
+        logger.debug(f" nomDocumentoAdjunto de plantilla encontrado para ID de plantilla {idPlantilla} y expediente {idExpediente}: {nomDocAdjunto}")
+        return nomDocAdjunto
+        
+    except Exception as e:
+        logger.error(f" Error consultando nomDocumentoAdjunto de plantilla para ID de plantilla {idPlantilla} y expediente {idExpediente}: {e}")
+        return None
+
+def fetch_tipoPlantilla(
+        conn: Connection, 
+        idPlantilla: str,
+        idExpediente: str ) -> Optional[int]:
+    """
+    Obtiene el ID del tipo de plantilla, correo o formato
+    """
+    logger.debug(f" Consultando TipoPlantilla para ID de plantilla: {idPlantilla} y expediente: {idExpediente}")
+    
+    sql = """
+    SELECT TOP (1) [tipoPlantillaId]
+    FROM BOFF_DOC_PLANTILLAS
+    WHERE idPlantilla = ?;
+"""
+    try:
+        cursor = conn.cursor()
+        cursor.execute(sql, (idPlantilla))
+        row = cursor.fetchone()
+        
+        if not row:
+            logger.warning(f" No se encontro TipoPlantilla para ID de plantilla: {idPlantilla} y expediente: {idExpediente}")
+            return None
+
+        # Puedes acceder por ndice o por nombre si lo prefieres:
+        idTipoPlantilla = row[0]                   
+        logger.debug(f" TipoPlantilla de plantilla encontrado para ID de plantilla {idPlantilla} y expediente {idExpediente}: {idTipoPlantilla}")
+        return idTipoPlantilla
+        
+    except Exception as e:
+        logger.error(f" Error consultando TipoPlantilla de plantilla para ID de plantilla {idPlantilla} y expediente {idExpediente}: {e}")
         return None

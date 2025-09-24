@@ -5,6 +5,7 @@ import os
 # Añadir el directorio actual al path para importar logger
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 from logger import setup_logger
+from core.horario_laboral import debe_ejecutar_bot, get_info_horario_laboral
 
 from core.API_Consumo import consumir_api_y_procesar
 
@@ -13,6 +14,21 @@ logger = setup_logger("Main")
 
 def main():
     logger.info("Iniciando proceso principal de automatización")
+    
+    # Verificar horario laboral
+    debe_ejecutar, razon = debe_ejecutar_bot()
+    info_horario = get_info_horario_laboral()
+    
+    logger.info(f"Validación de horario laboral: {razon}")
+    
+    if not debe_ejecutar:
+        logger.info("Bot no ejecutado - Fuera de horario laboral")
+        if "proximo_horario_laboral" in info_horario:
+            logger.info(f"Próxima ejecución programada: {info_horario['proximo_horario_laboral']}")
+        print(f"Bot no ejecutado: {razon}")
+        return 2  # Código específico para "fuera de horario"
+    
+    logger.info("Horario laboral válido - Continuando con la ejecución")
     
     try:
         # Consumir API y procesar elementos (mismo flujo que test_consumo.py)

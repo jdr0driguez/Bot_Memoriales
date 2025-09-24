@@ -1,0 +1,4 @@
+[2025-09-24 10:30:56] [INFO] [EjemploFechas] 🗂️ Ejemplo de log en carpeta organizada por fecha
+[2025-09-24 10:30:56] [DEBUG] [EjemploFechas] 🔍 Log DEBUG - Solo visible si está habilitado
+[2025-09-24 10:30:56] [WARNING] [EjemploFechas] ⚠️ Log de advertencia de ejemplo
+[2025-09-24 10:30:56] [ERROR] [EjemploFechas] ❌ Log de error de ejemplo

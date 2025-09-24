@@ -1,7 +1,7 @@
 # test_consumo.py
 import json
 from core.API_parser import parse_api_response
-from core.processing_service import process_elemento
+from core.processing_serviceOri import process_elemento
 
 def test_local():
     # 1) Carga el JSON de prueba

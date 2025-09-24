@@ -12,7 +12,7 @@ from logger import setup_logger
 # Configurar logger específico para este módulo
 logger = setup_logger("EstadoService")
 
-def actualizar_estado_expediente(expediente_id: str, plantilla_id: str) -> bool:
+def actualizar_estado_expediente(expediente_id: str, plantilla_id: str, demandado_id: str) -> bool:
     """
     Actualiza el estado de un expediente procesado exitosamente.
     
@@ -29,7 +29,8 @@ def actualizar_estado_expediente(expediente_id: str, plantilla_id: str) -> bool:
         "ExpedientesPlantillas": [
             {
                 "ExpedienteId": expediente_id,
-                "PlantillaId": plantilla_id
+                "PlantillaId": plantilla_id,
+                "DemandadoId": demandado_id
             }
         ],
         "Estado": "Terminado"

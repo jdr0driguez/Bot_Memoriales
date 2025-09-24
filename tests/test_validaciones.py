@@ -7,7 +7,7 @@ import os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from logger import setup_logger
 from core.API_parser import parse_api_response
-from core.processing_service import process_elemento
+from core.processing_serviceOri import process_elemento
 
 # Configurar logger para el test
 logger = setup_logger("TestValidaciones")

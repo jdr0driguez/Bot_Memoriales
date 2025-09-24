@@ -67,7 +67,7 @@ def decrypt_aes_csharp(encrypted_b64: str, key_value: str) -> str:
 
 if __name__ == '__main__':
     logger.info(" Ejecutando prueba de desencriptacin")
-    ejemplo = "GJNZHDycfmk6C7Ubv/EHUg===="
-    key     = "3NcR1p+OnP4s$W0rDN@m3k3yV@lv3C0mP4NYC|B3RG3$+!0NM0DVL0|CB4CK3NDW3B"
+    ejemplo = "GJNZHDycfmk6C7Ubv/EHUg=="
+    key     = "3NcR1p+¡OnP4s$W0rDN@m3k3yV@lv3C0mP4NYC|B3RG3$+!0NM0DVL0|CB4CK3NDW3B"
     resultado = decrypt_aes_csharp(ejemplo, key)
     logger.info(f" Texto desencriptado: {resultado}")
