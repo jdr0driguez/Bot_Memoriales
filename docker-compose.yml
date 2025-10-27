@@ -1,0 +1,70 @@
+version: '3.8'
+
+services:
+  bot-memoriales:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: bot-memoriales:latest
+    container_name: bot-memoriales
+    
+    # Reinicio automático en caso de fallo
+    restart: unless-stopped
+    
+    # Variables de entorno (puedes usar archivo .env)
+    environment:
+      - PYTHONUNBUFFERED=1
+      - TZ=America/Bogota
+    
+    # Montar volumen para logs (accesible desde el host)
+    volumes:
+      # Logs persistentes: ./logs (host) <-> /app/logs (container)
+      - ./logs:/app/logs:rw
+      
+      # OPCIONAL: Si necesitas compartir configuración sin rebuild
+      # - ./config.py:/app/config.py:ro
+      
+      # OPCIONAL: Si usas archivo .env en el futuro
+      # - ./.env:/app/.env:ro
+    
+    # Red personalizada (opcional)
+    networks:
+      - bot-network
+    
+    # Recursos límites (ajustar según necesidades)
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 2G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
+    
+    # Logging del contenedor
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+networks:
+  bot-network:
+    driver: bridge
+
+# OPCIONAL: Si necesitas ejecutar el bot en horarios específicos,
+# descomenta y configura un cron scheduler separado:
+#
+# services:
+#   bot-scheduler:
+#     image: mcuadros/ofelia:latest
+#     container_name: bot-scheduler
+#     depends_on:
+#       - bot-memoriales
+#     command: daemon --docker
+#     volumes:
+#       - /var/run/docker.sock:/var/run/docker.sock:ro
+#     labels:
+#       ofelia.job-run.bot-memoriales.schedule: "@every 30m"
+#       ofelia.job-run.bot-memoriales.container: "bot-memoriales"
+

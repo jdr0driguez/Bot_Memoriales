@@ -23,7 +23,8 @@ def parse_elemento(data: dict[str, Any]) -> Elemento:
         SubEtapaInicialId=data.get("SubEtapaInicialId", 0),
         CorreoRemitente=data.get("CorreoRemitente", ""),
         CorreoCopia=data.get("CorreoCopia", ""),
-        CorreoPass=data.get("Contrasena", "")
+        CorreoPass=data.get("Contrasena", ""),
+        CorreoCopiaOculta=data.get("CorreoCopiaOculta", "")
     )
     
     logger.debug(f" Elemento parseado exitosamente: {elemento.Expediente}")

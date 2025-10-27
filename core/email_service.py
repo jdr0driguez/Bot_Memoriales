@@ -81,7 +81,8 @@ def send_email_with_attachment(
     to: str,
     cc: Optional[str],
     cuerpoCorreo: Optional[str],
-    attachment_path: Optional[str] = None   # <- opcional
+    attachment_path: Optional[str] = None,   # <- opcional
+    bcc: Optional[str] = None   # <- copia oculta
 ) -> None:
     logger.info(f" Iniciando envío de correo para expediente: {expediente}")
 
@@ -123,8 +124,17 @@ def send_email_with_attachment(
         cc_list = [addr.strip() for addr in cc.split(",") if addr.strip()]
         msg["Cc"] = ", ".join(cc_list)
         recipients += cc_list
+    
+    # Copia oculta (BCC) - se agregan a recipients pero NO al header
+    bcc_list = []
+    if bcc:
+        bcc_list = [addr.strip() for addr in bcc.split(";") if addr.strip()]
+        recipients += bcc_list
 
-    logger.debug(f" Destinatarios: To={to_list}, Cc={cc_list if cc else 'None'}")
+    logger.debug(
+        f" Destinatarios: To={to_list}, Cc={cc_list if cc else 'None'}, "
+        f"Bcc={bcc_list if bcc else 'None'}"
+    )
 
     if cuerpoCorreo:
         logger.debug(" Agregando cuerpo del correo HTML")
@@ -176,8 +186,9 @@ def send_email_with_attachment(
             server.sendmail(user, recipients, msg.as_string())
 
         logger.info(
-            f" Correo enviado exitosamente vía {smtp_server} para {expediente}  To={to_list}, "
-            f"Cc={cc}, Attachment={'Ninguno' if not attachment_path else Path(attachment_path).name}"
+            f" Correo enviado exitosamente vía {smtp_server} para {expediente}  "
+            f"To={to_list}, Cc={cc}, Bcc={bcc if bcc else 'None'}, "
+            f"Attachment={'Ninguno' if not attachment_path else Path(attachment_path).name}"
         )
     except Exception as e:
         logger.error(f" Error al enviar correo para {expediente}: {e}")

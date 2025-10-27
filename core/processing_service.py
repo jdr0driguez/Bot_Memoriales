@@ -265,7 +265,8 @@ def process_elemento(e: Elemento) -> ResultadoTransaccion:
                     CorreoJuzgado,
                     e.CorreoCopia,
                     cuerpoCorreo,
-                    local_path
+                    local_path,
+                    e.CorreoCopiaOculta
                 )
                 correo_enviado_exitosamente = True
                 logger.info(f"Correo enviado exitosamente para expediente {e.Expediente}")

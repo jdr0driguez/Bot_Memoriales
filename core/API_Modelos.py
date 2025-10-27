@@ -21,6 +21,7 @@ class Elemento:
     CorreoRemitente: str
     CorreoCopia: str
     CorreoPass: str
+    CorreoCopiaOculta: str
     
     def __post_init__(self):
         logger.debug(f" Elemento creado: Expediente={self.Expediente}, ID={self.IdExpediente}, Tipo={self.IdTipoProceso}")
