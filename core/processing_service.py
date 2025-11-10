@@ -13,7 +13,7 @@ from logger import setup_logger
 
 from core.API_Modelos import Elemento, ResultadoTransaccion
 from core.db_Connection import get_db_connection
-from core.repository import fetch_campos_especificos, fetch_nombre_plantilla, fetch_campos_idDemandado, fetch_correo_juzgado, fetch_plantilla_correo, fetch_idDemandado, fetch_nomDocumento, fetch_tipoPlantilla
+from core.repository import fetch_campos_especificos, fetch_nombre_plantilla, fetch_correo_juzgado, fetch_plantilla_correo, fetch_idDemandado, fetch_nomDocumento, fetch_tipoPlantilla
 from core.descargaPlantillaSFTP import descargar_archivo_sftp
 from core.email_service import send_email_with_attachment
 from config import KEYHASH
@@ -133,23 +133,6 @@ def process_elemento(e: Elemento) -> ResultadoTransaccion:
             # Desempaqueta en variables IdPlantilla
             nomPlantilla = resultado
             logger.debug(f"Nombre de plantilla encontrado: {nomPlantilla}")
-
-            # Busqueda de IdDemandado con el Documento del demandado
-            logger.debug(f"Buscando IdDemandado para documento={docDemandado1}")
-            resulIdDemandado = fetch_campos_idDemandado(conn, docDemandado1)
-            if resulIdDemandado is None:
-                logger.error(f"No existe idDemandado para documento={docDemandado1}")
-                return ResultadoTransaccion(
-                    expediente=e.Expediente,
-                    exito=False,
-                    mensaje=f"No existe idDemandado con IdExpediente={e.IdExpediente}"
-                )
-            
-            # Desempaqueta en variables IdDemandado
-            idDemandado = resulIdDemandado
-            logger.debug(f"IdDemandado encontrado: {idDemandado}")
-
-            # Aquí va el resto de tu lógica con esas variables...
            
             # ------------------------------------------------------------------
             # 1) Validamos y normalizamos el tipo de plantilla
@@ -217,7 +200,24 @@ def process_elemento(e: Elemento) -> ResultadoTransaccion:
                 local_path = None
 
             # ------------------------------------------------------------------
-            # 3) Preparación del correo
+            # 3) Validación de IdDemandado ANTES de enviar correo
+            # ------------------------------------------------------------------
+            logger.debug(f"Validando IdDemandado para documento={docDemandado1}")
+            idDemandadoFetch = fetch_idDemandado(conn, e.IdPlantilla, e.IdExpediente)
+            if idDemandadoFetch is None:
+                logger.error(f"No existe idDemandado para documento={docDemandado1}")
+                # Limpiar archivo si se descargó antes de la validación
+                if local_path:
+                    _limpiar_archivo_local(local_path)
+                return ResultadoTransaccion(
+                    expediente=e.Expediente,
+                    exito=False,
+                    mensaje=f"No existe idDemandado con IdExpediente={e.IdExpediente}"
+                )
+            logger.info(f"IdDemandado validado exitosamente: {idDemandadoFetch}")
+
+            # ------------------------------------------------------------------
+            # 4) Preparación del correo
             # ------------------------------------------------------------------
             logger.info(f"Preparando envío de correo para expediente {e.Expediente}")
             cuerpoCorreo = fetch_plantilla_correo(conn, e.IdPlantilla, e.IdExpediente)
@@ -284,21 +284,6 @@ def process_elemento(e: Elemento) -> ResultadoTransaccion:
                 _limpiar_archivo_local(local_path)
 
             logger.info(f"Expediente {e.Expediente} procesado exitosamente")
-
-            # ------------------------------------------------------------------
-            # 4) Búsqueda de IdDemandado
-            # ------------------------------------------------------------------
-            logger.debug(f"Buscando IdDemandado para documento={docDemandado1}")
-            idDemandadoFetch = fetch_idDemandado(conn, e.IdPlantilla, e.IdExpediente)
-            if idDemandadoFetch is None:
-                logger.error(f"No existe idDemandado para documento={docDemandado1}")
-                # Nota: En este punto el correo ya se envió y el archivo ya se limpió
-                # No necesitamos limpiar archivo aquí
-                return ResultadoTransaccion(
-                    expediente=e.Expediente,
-                    exito=False,
-                    mensaje=f"No existe idDemandado con IdExpediente={e.IdExpediente}"
-                )
 
             # ------------------------------------------------------------------
             # 5) Actualizar estado del expediente
