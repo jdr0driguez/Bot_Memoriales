@@ -6,7 +6,7 @@ Incluye manejo de festivos colombianos y zona horaria local.
 
 import sys
 import os
-from datetime import datetime, date
+from datetime import datetime, date, timedelta
 from typing import List, Tuple
 import pytz
 
@@ -62,7 +62,8 @@ def _get_festivos_colombia(año: int) -> List[date]:
     for mes, dia in festivos_fijos:
         festivos.append(date(año, mes, dia))
     
-    # Festivos que se trasladan al lunes siguiente si caen en fin de semana
+    # Festivos que se trasladan al lunes siguiente según Ley Emiliani
+    # Estos festivos SOLO son festivos si caen en lunes, si no, se trasladan al lunes siguiente
     festivos_trasladables = [
         (1, 6),   # Reyes Magos
         (3, 19),  # San José
@@ -75,10 +76,13 @@ def _get_festivos_colombia(año: int) -> List[date]:
     
     for mes, dia in festivos_trasladables:
         fecha = date(año, mes, dia)
-        # Si cae en fin de semana, trasladar al lunes siguiente
-        if fecha.weekday() >= 5:  # Sábado (5) o Domingo (6)
-            dias_hasta_lunes = 7 - fecha.weekday()
-            fecha = date(año, mes, dia + dias_hasta_lunes)
+        # Si NO es lunes, trasladar al lunes siguiente
+        if fecha.weekday() != 0:  # 0 = lunes
+            dias_hasta_lunes = (7 - fecha.weekday()) % 7
+            if dias_hasta_lunes == 0:  # Si es domingo
+                dias_hasta_lunes = 1
+            # Calcular el lunes siguiente usando timedelta para evitar problemas de días del mes
+            fecha = fecha + timedelta(days=dias_hasta_lunes)
         festivos.append(fecha)
     
     # Festivos basados en Pascua (cálculo simplificado)
