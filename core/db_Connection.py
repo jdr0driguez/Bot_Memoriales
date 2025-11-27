@@ -29,10 +29,11 @@ def get_db_connection() -> Iterator[pyodbc.Connection]:
         f"SERVER={server};"
         f"DATABASE={database};"
         f"UID={user};"
-        f"PWD={os.getenv('DB_PASSWORD', 'JuanR*2025')};"
+        f"PWD={os.getenv('DB_PASSWORD', '+d3Ve10w4-867d*')};"
         f"TrustServerCertificate=yes;"
     )
     
+    conn = None
     try:
         logger.debug(" Estableciendo conexin a la base de datos")
         conn = pyodbc.connect(conn_str)
@@ -42,5 +43,6 @@ def get_db_connection() -> Iterator[pyodbc.Connection]:
         logger.error(f" Error al conectar a la base de datos: {e}")
         raise
     finally:
-        logger.debug(" Cerrando conexin a la base de datos")
-        conn.close()
+        if conn is not None:
+            logger.debug(" Cerrando conexin a la base de datos")
+            conn.close()
