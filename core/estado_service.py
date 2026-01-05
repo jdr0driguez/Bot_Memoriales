@@ -11,6 +11,8 @@ from logger import setup_logger
 
 # Configurar logger específico para este módulo
 logger = setup_logger("EstadoService")
+#url = "http://localhost:5000/api/Externo/expediente-estadobotplantilla"
+url = "https://rocketvel.ai/backend/api/Externo/expediente-estadobotplantilla"
 
 def actualizar_estado_expediente(expediente_id: str, plantilla_id: str, demandado_id: str) -> bool:
     """
@@ -22,9 +24,7 @@ def actualizar_estado_expediente(expediente_id: str, plantilla_id: str, demandad
         
     Returns:
         bool: True si la actualización fue exitosa, False en caso contrario
-    """
-    url = "https://rocketvel.ai/backend/api/Externo/expediente-estadobotplantilla"
-    
+    """    
     payload = {
         "ExpedientesPlantillas": [
             {
@@ -70,9 +70,7 @@ def actualizar_estado_multiple(expedientes_plantillas: List[Dict[str, str]]) -> 
         
     Returns:
         Dict[str, bool]: Diccionario con el resultado de cada actualización
-    """
-    url = "https://rocketvel.ai/backend/api/Externo/expediente-estadobotplantilla"
-    
+    """    
     payload = {
         "ExpedientesPlantillas": expedientes_plantillas,
         "Estado": "Terminado"
